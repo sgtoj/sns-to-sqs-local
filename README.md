@@ -15,7 +15,7 @@ during development to prevent any dependences of remote services.
 - execute: `docker-compose up subscriber consumer`
 - send Message to the sns topic
 
-## How to Consume for Exists Projects
+## How to Consume for Existing Projects
 
 On its own, this project is worthless. Its logic and config is meants to be
 consumed by other projects that forwards sns notifications to queue to be
