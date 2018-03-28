@@ -1,0 +1,24 @@
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    "**/*.map": false,
+    "bin/": true,
+    "node_modules/": true,
+    "dist/": true
+  },
+  // 2 space indention for *.json
+  "[json]": {
+    "editor.tabSize": 2,
+    "editor.detectIndentation": false
+  },
+  // 2 space indention for *.json /w comments
+  "[jsonc]": {
+    "editor.tabSize": 2,
+    "editor.detectIndentation": false
+  },
+  // linux style line ending
+  "files.eol": "\n"
+}

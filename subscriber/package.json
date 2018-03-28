@@ -1,0 +1,23 @@
+{
+  "name": "sns-to-sqs-local",
+  "version": "1.0.0",
+  "description": "Dev-tool to locally subscribe and queue SNS messages.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sgtoj/sns-to-sqs-local.git"
+  },
+  "author": {
+    "name": "Brian Ojeda"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.214.1",
+    "ngrok": "^3.0.1",
+    "server": "^1.0.18"
+  }
+}

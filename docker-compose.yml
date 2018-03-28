@@ -1,0 +1,17 @@
+version: "3.4"
+services:
+
+  sqs:
+    image: s12v/elasticmq:latest
+    ports:
+    - 9324:9324
+
+  subscriber:
+    image: sns-to-sqs-local:latest
+    build:
+      context: ./subscriber
+      dockerfile: Dockerfile
+    env_file: ./local.env
+    ports:
+    - 4040:4040
+    command: node index.js

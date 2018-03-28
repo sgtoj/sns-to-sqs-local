@@ -1,0 +1,8 @@
+# node
+node_modules
+tmp
+*.map
+*.log
+
+# secrets
+local.env
