@@ -30,7 +30,8 @@ async function handleSnsMessage(data) {
         await utils.request(event.SubscribeURL);
     } else if (event.Type === "Notification") {
         console.log(`${event.Subject || "no-subject"}: ${event.Message}`);
-        sqs.queue(event.Message);
+        let msg = JSON.stringify(event);
+        sqs.queue(msg);
     } else {
         console.log(`unknown: ${JSON.stringify(event)}`);
     }
