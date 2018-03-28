@@ -1,3 +1,5 @@
+const isString = require("util").isString;
+const isNumber = require("util").isNumber;
 const ngrok = require("ngrok");
 const server = require("server");
 const status = require("server/reply").status;
@@ -60,10 +62,11 @@ async function sleep(ms) {
 }
 
 
-
-
-exports.startWebServer = startWebServer;
-exports.startTunnel = startTunnel;
+exports.isNumber = isNumber
+exports.isString = isString
 exports.parse = parse;
 exports.request = request;
 exports.sleep = sleep;
+exports.startWebServer = startWebServer;
+exports.startTunnel = startTunnel;
+

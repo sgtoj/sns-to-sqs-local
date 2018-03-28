@@ -1,9 +1,8 @@
 //=============================================================================
 //
 // This script starts local web server, creates a public tunnel connection it
-// via ngrok, and subscribes the public accessible address to a SNS topic. SNS
-// messages sent to the web server are forwarded to a SQS queue. It is meant to
-// be used during development to prevent any dependences of remote services.
+// via ngrok, and subscribes the public accessible address to a SNS topic.SNS
+// messages sent to the web server are forwarded to a SQS queue.
 //
 //=============================================================================
 
@@ -11,19 +10,36 @@ const utils = require("./lib/utils");
 const sns = require("./lib/sns");
 const sqs = require("./lib/sqs");
 
-async function handler(req) {
-    let data = utils.parse(req.data);
-    if (!data) return;
+const QUEUE_ALL_POST_REQUESTS = process.env.QUEUE_ALL_POST_REQUESTS;
 
-    if (data.Type === "SubscriptionConfirmation") {
-        console.log(`confirming subscription: ${data.SubscribeURL}`);
-        await utils.request(data.SubscribeURL);
-    } else if (data.Type === "Notification") {
-        console.log(`${data.Subject || "no-subject"}: ${data.Message}`);
-        sqs.queue(data.Message);
+async function handler(req) {
+    if (!req.headers["x-amz-sns-topic-arn"] && !QUEUE_ALL_POST_REQUESTS)
+        console.log(`rejecting msg: ${req.data}`)
+    else if (req.headers["x-amz-sns-topic-arn"])
+        await handleSnsMessage(req.data);
+    else if (req.method === "POST")
+        await handlePostRequest(req.data);
+}
+
+async function handleSnsMessage(data) {
+    let event = utils.parse(data);
+    if (!event) return;
+
+    if (event.Type === "SubscriptionConfirmation") {
+        console.log(`confirming subscription: ${event.SubscribeURL}`);
+        await utils.request(event.SubscribeURL);
+    } else if (event.Type === "Notification") {
+        console.log(`${event.Subject || "no-subject"}: ${event.Message}`);
+        sqs.queue(event.Message);
     } else {
-        console.log(`unknown: ${data}`);
+        console.log(`unknown: ${JSON.stringify(event)}`);
     }
+}
+
+async function handlePostRequest(data) {
+    if (!utils.isString(data) && !utils.isNumber(data))
+        data = JSON.stringify(data);
+    sqs.queue(data.toString());
 }
 
 async function init() {

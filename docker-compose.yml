@@ -5,13 +5,18 @@ services:
     image: s12v/elasticmq:latest
     ports:
     - 9324:9324
+    logging:
+      driver: none
 
   subscriber:
     image: sns-to-sqs-local:latest
     build:
       context: ./subscriber
       dockerfile: Dockerfile
+    environment:
+    - PORT=8082
     env_file: ./local.env
     ports:
-    - 4040:4040
+    - 8082:8082  # web port
+    - 4040:4040  # ngork inspect port
     command: node index.js
