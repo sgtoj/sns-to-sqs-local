@@ -11,7 +11,6 @@ during development to prevent any dependences of remote services.
 - download or clone project
 - make a copy of `local-template.env` as `local.env`.
 - update `local.env` with desired variables.
-  - require:
 - execute: `docker-compose up subscriber consumer`
 - send Message to the sns topic
 
