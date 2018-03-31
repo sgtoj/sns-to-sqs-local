@@ -54,9 +54,9 @@ async function autoUnsubscribe(topicName) {
         let data = await subs.next();
         done = data.done;
         let sub = data.value;
-        if (sub.SubscriptionArn === "PendingConfirmation")
+        if (!sub || sub.SubscriptionArn === "PendingConfirmation")
             continue;
-        if (!sub.Endpoint.includes("ngrok.io/sns"))
+        if (!sub.Endpoint || !sub.Endpoint.includes("ngrok.io/sns"))
             continue;
         console.log(`auto-unsubscribe from topic: ${sub.SubscriptionArn}`)
         await snsUnsubscribe(sub.SubscriptionArn);
