@@ -3,6 +3,7 @@ node_modules
 tmp
 *.map
 *.log
+package-lock.json
 
 # secrets
 local.env
