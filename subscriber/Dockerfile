@@ -7,7 +7,10 @@ ENV NODE_ENV development
 ENV PATH /opt/app/node_modules/.bin:$PATH
 
 ADD ./package.json /opt/app/package.json
-RUN cd /opt/app && npm install && npm cache clean --force
+RUN cd /opt/app \
+    && npm install \
+    && npm audit fix \
+    && npm cache clean --force
 
 ADD ./ /opt/app
 
