@@ -1,6 +1,6 @@
 {
   "name": "sns-to-sqs-local",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Dev-tool to locally subscribe and queue SNS messages.",
   "main": "server.js",
   "scripts": {
@@ -16,8 +16,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.214.1",
-    "ngrok": "^3.0.1",
-    "server": "^1.0.18"
+    "aws-sdk": "^2.506.0",
+    "ngrok": "^3.2.4",
+    "server": "^1.0.19"
   }
 }

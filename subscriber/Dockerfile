@@ -1,4 +1,4 @@
-FROM node:8-alpine
+FROM node:12-alpine
 
 ADD ngrok.yml  /root/.ngrok2/ngrok.yml
 
