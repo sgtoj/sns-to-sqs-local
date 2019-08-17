@@ -1,11 +1,11 @@
 import ngrok from "ngrok";
 import server from "server";
 import { status } from "server/reply";
+import * as config from "../config";
 
-const PORT = process.env.PORT;
 
 export async function startWebServer(handler) {
-    const port = PORT || 80;
+    const port = config.PORT || 80;
     const options = { port: port, security: false } as any;
     const svr = await server(options, wrapHandler(handler));
     console.log(`server attached to port: ${svr.options.port}`);

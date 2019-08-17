@@ -9,11 +9,11 @@
 import * as sns from "./aws/sns";
 import * as sqs from "./aws/sqs";
 import * as utils from "./common/utils";
+import * as config from "./config";
 
-const QUEUE_ALL_POST_REQUESTS = process.env.QUEUE_ALL_POST_REQUESTS;
 
 async function handler(req) {
-    if (!req.headers["x-amz-sns-topic-arn"] && !QUEUE_ALL_POST_REQUESTS)
+    if (!req.headers["x-amz-sns-topic-arn"] && !config.QUEUE_ALL_POST_REQUESTS)
         console.log(`rejecting msg: ${req.data}`);
     else if (req.headers["x-amz-sns-topic-arn"])
         await handleSnsMessage(req.data);

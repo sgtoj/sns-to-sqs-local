@@ -1,9 +1,9 @@
 import AWS from "aws-sdk";
 import * as utils from "../common/utils";
+import * as config from "../config";
 
-const SQS_URL = process.env.AWS_SQS_URL;
 
-const sqs = new AWS.SQS({ endpoint: SQS_URL });
+const sqs = new AWS.SQS({ endpoint: config.AWS_SQS_URL });
 let running = false;
 let pending = [];
 
@@ -14,7 +14,7 @@ export const queue = (msg) => {
 };
 
 async function send(msg) {
-    let params = { QueueUrl: SQS_URL, MessageBody: msg };
+    let params = { QueueUrl: config.AWS_SQS_URL, MessageBody: msg };
     try {
         await sqs.sendMessage(params).promise();
         console.log(`msg send to queue`);

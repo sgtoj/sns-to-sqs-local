@@ -1,26 +1,20 @@
 import AWS from "aws-sdk";
-
-const AWS_SNS_TOPIC = process.env.AWS_SNS_TOPIC;
-const AWS_SNS_TOPIC_AUTO_UNSUBSCRIBE = parseInt(process.env.AWS_SNS_TOPIC_AUTO_UNSUBSCRIBE);
-const AWS_SNS_TOPIC_AUTO_UNSUBSCRIBE_ON_EXIT = parseInt(process.env.AWS_SNS_TOPIC_AUTO_UNSUBSCRIBE_ON_EXIT);
-const AWS_SNS_TOPIC_SEARCH = parseInt(process.env.AWS_SNS_TOPIC_SEARCH);
-const AWS_SNS_TOPIC_SUBSCRIBE = parseInt(process.env.AWS_SNS_TOPIC_SUBSCRIBE);
-
+import * as config from "../config";
 let sns = new AWS.SNS();
 
 export async function subscribe(url) {
-    if (!AWS_SNS_TOPIC_SUBSCRIBE) {
+    if (!config.AWS_SNS_TOPIC_SUBSCRIBE) {
         console.log(`skipping sns topic subscribe as it is disabled`);
         return;
     }
 
-    if (!AWS_SNS_TOPIC)
+    if (!config.AWS_SNS_TOPIC)
         throw new Error("Environment Variable Not Set: AWS_SNS_TOPIC");
 
-    if (AWS_SNS_TOPIC_SEARCH) {
-        await autoSubscribe(url, AWS_SNS_TOPIC);
+    if (config.AWS_SNS_TOPIC_SEARCH) {
+        await autoSubscribe(url, config.AWS_SNS_TOPIC);
     } else {
-        await snsSubscribe(url, AWS_SNS_TOPIC);
+        await snsSubscribe(url, config.AWS_SNS_TOPIC);
     }
 }
 
@@ -64,14 +58,14 @@ async function autoUnsubscribe(topicName) {
 }
 
 async function snsSubscribe(url, topic) {
-    if (AWS_SNS_TOPIC_AUTO_UNSUBSCRIBE)
+    if (config.AWS_SNS_TOPIC_AUTO_UNSUBSCRIBE)
         await autoUnsubscribe(topic);
     let proto = url.indexOf("https:") === 0 ? "https" : "http";
     let params = { Endpoint: url, Protocol: proto, TopicArn: topic };
     console.log(`subscribing: ${topic} -> ${url}`);
     let sub = await sns.subscribe(params).promise();
     process.on("SIGTERM", async () => {
-        if (AWS_SNS_TOPIC_AUTO_UNSUBSCRIBE_ON_EXIT)
+        if (config.AWS_SNS_TOPIC_AUTO_UNSUBSCRIBE_ON_EXIT)
             await snsUnsubscribe(sub.SubscriptionArn);
     });
 }
