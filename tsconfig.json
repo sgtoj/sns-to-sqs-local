@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2018",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "experimentalDecorators": false,
+    "noLib": false,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": true,
+    "declaration": false,
+    "rootDir": "src",
+    "outDir": "dist",
+    "newLine": "LF",
+    "pretty": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "watch": false
+  },
+  "exclude": [
+    "src/**/*.Test.ts"
+  ],
+  "typeAcquisition": {
+    "enable": true,
+  }
+}

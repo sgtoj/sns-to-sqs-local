@@ -1,5 +1,5 @@
-const AWS = require("aws-sdk");
-const utils = require("./utils");
+import AWS from "aws-sdk";
+import * as utils from "./utils";
 
 const SQS_URL = process.env.AWS_SQS_URL;
 
@@ -7,16 +7,17 @@ const sqs = new AWS.SQS({ endpoint: SQS_URL });
 let running = false;
 let pending = [];
 
-exports.queue = (msg) => {
+export const queue = (msg) => {
     pending.push(msg);
+    // tslint:disable-next-line: no-floating-promises
     if (!running) startSender();
-}
+};
 
 async function send(msg) {
     let params = { QueueUrl: SQS_URL, MessageBody: msg };
     try {
         await sqs.sendMessage(params).promise();
-        console.log(`msg send to queue`)
+        console.log(`msg send to queue`);
     } catch (err) {
         if (err.errno !== "ECONNREFUSED")
             throw err;

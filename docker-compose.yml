@@ -11,7 +11,7 @@ services:
   subscriber:
     image: sns-to-sqs-local:latest
     build:
-      context: ./subscriber
+      context: ./src
       dockerfile: Dockerfile
     environment:
     - PORT=8082

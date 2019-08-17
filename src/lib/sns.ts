@@ -1,4 +1,4 @@
-const AWS = require("aws-sdk");
+import AWS from "aws-sdk";
 
 const AWS_SNS_TOPIC = process.env.AWS_SNS_TOPIC;
 const AWS_SNS_TOPIC_AUTO_UNSUBSCRIBE = parseInt(process.env.AWS_SNS_TOPIC_AUTO_UNSUBSCRIBE);
@@ -8,7 +8,7 @@ const AWS_SNS_TOPIC_SUBSCRIBE = parseInt(process.env.AWS_SNS_TOPIC_SUBSCRIBE);
 
 let sns = new AWS.SNS();
 
-async function subscribe(url) {
+export async function subscribe(url) {
     if (!AWS_SNS_TOPIC_SUBSCRIBE) {
         console.log(`skipping sns topic subscribe as it is disabled`);
         return;
@@ -58,7 +58,7 @@ async function autoUnsubscribe(topicName) {
             continue;
         if (!sub.Endpoint || !sub.Endpoint.includes("ngrok.io/sns"))
             continue;
-        console.log(`auto-unsubscribe from topic: ${sub.SubscriptionArn}`)
+        console.log(`auto-unsubscribe from topic: ${sub.SubscriptionArn}`);
         await snsUnsubscribe(sub.SubscriptionArn);
     }
 }
@@ -67,12 +67,12 @@ async function snsSubscribe(url, topic) {
     if (AWS_SNS_TOPIC_AUTO_UNSUBSCRIBE)
         await autoUnsubscribe(topic);
     let proto = url.indexOf("https:") === 0 ? "https" : "http";
-    let params = { Endpoint: url, Protocol: proto, TopicArn: topic }
+    let params = { Endpoint: url, Protocol: proto, TopicArn: topic };
     console.log(`subscribing: ${topic} -> ${url}`);
     let sub = await sns.subscribe(params).promise();
     process.on("SIGTERM", async () => {
         if (AWS_SNS_TOPIC_AUTO_UNSUBSCRIBE_ON_EXIT)
-            await snsUnsubscribe(sub.SubscriptionArn)
+            await snsUnsubscribe(sub.SubscriptionArn);
     });
 }
 
@@ -83,20 +83,24 @@ async function snsUnsubscribe(sub) {
 }
 
 async function snsListTopic(token) {
-    let params = {};
-    if (token) { params.NextToken = token }
+    let params = {} as any;
+    if (token) { params.NextToken = token; }
     console.log(`listing topics (token: ${token || "none"})`);
     return await sns.listTopics(params).promise();
 }
 
 async function snsListSubscription(topic, token) {
-    let params = { TopicArn: topic };
-    if (token) { params.NextToken = token }
+    let params = { TopicArn: topic } as any;
+    if (token) { params.NextToken = token; }
     console.log(`listing subscrciptions (token: ${token || "none"})`);
     return await sns.listSubscriptionsByTopic(params).promise();
 }
 
 class TopicList {
+    isLastPage: boolean;
+    topics: any[];
+    token: any;
+
     constructor() {
         this.isLastPage = false;
         this.topics = [];
@@ -108,16 +112,21 @@ class TopicList {
     async next() {
         if (this.topics.length === 0 && !this.finished) {
             let result = await snsListTopic(this.token);
-            this.topics = result.Topics
-            this.token = result.NextToken
+            this.topics = result.Topics;
+            this.token = result.NextToken;
             this.isLastPage = !this.token;
         }
-        let topic = this.topics.pop() || {}
-        return { value: topic.TopicArn, done: this.finished }
+        let topic = this.topics.pop() || {};
+        return { value: topic.TopicArn, done: this.finished };
     }
 }
 
 class SubscriptionList {
+    isLastPage: boolean;
+    subs: any[];
+    token: any;
+    topic: any;
+
     constructor(topic) {
         this.isLastPage = false;
         this.subs = [];
@@ -130,13 +139,11 @@ class SubscriptionList {
     async next() {
         if (this.subs.length === 0 && !this.finished) {
             let result = await snsListSubscription(this.topic, this.token);
-            this.subs = result.Subscriptions
-            this.token = result.NextToken
+            this.subs = result.Subscriptions;
+            this.token = result.NextToken;
             this.isLastPage = !this.token;
         }
-        let sub = this.subs.pop() || {}
-        return { value: sub, done: this.finished }
+        let sub = this.subs.pop() || {};
+        return { value: sub, done: this.finished };
     }
 }
-
-exports.subscribe = subscribe;

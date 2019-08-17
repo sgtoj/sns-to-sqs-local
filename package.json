@@ -19,5 +19,12 @@
     "aws-sdk": "^2.506.0",
     "ngrok": "^3.2.4",
     "server": "^1.0.19"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.2",
+    "@types/server": "^1.0.2",
+    "nodemon": "^1.19.1",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3"
   }
 }

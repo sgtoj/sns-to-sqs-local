@@ -1,20 +1,20 @@
-//=============================================================================
+// =============================================================================
 //
 // This script starts local web server, creates a public tunnel connection it
 // via ngrok, and subscribes the public accessible address to a SNS topic. SNS
 // messages sent to the web server are forwarded to a SQS queue.
 //
-//=============================================================================
+// =============================================================================
 
-const utils = require("./lib/utils");
-const sns = require("./lib/sns");
-const sqs = require("./lib/sqs");
+import * as sns from "./lib/sns";
+import * as sqs from "./lib/sqs";
+import * as utils from "./lib/utils";
 
 const QUEUE_ALL_POST_REQUESTS = process.env.QUEUE_ALL_POST_REQUESTS;
 
 async function handler(req) {
     if (!req.headers["x-amz-sns-topic-arn"] && !QUEUE_ALL_POST_REQUESTS)
-        console.log(`rejecting msg: ${req.data}`)
+        console.log(`rejecting msg: ${req.data}`);
     else if (req.headers["x-amz-sns-topic-arn"])
         await handleSnsMessage(req.data);
     else if (req.method === "POST")
@@ -53,5 +53,6 @@ async function init() {
     }
 }
 
+// tslint:disable-next-line: no-floating-promises
 init();
 
