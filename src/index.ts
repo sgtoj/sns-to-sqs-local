@@ -6,9 +6,9 @@
 //
 // =============================================================================
 
-import * as sns from "./lib/sns";
-import * as sqs from "./lib/sqs";
-import * as utils from "./lib/utils";
+import * as sns from "./aws/sns";
+import * as sqs from "./aws/sqs";
+import * as utils from "./common/utils";
 
 const QUEUE_ALL_POST_REQUESTS = process.env.QUEUE_ALL_POST_REQUESTS;
 

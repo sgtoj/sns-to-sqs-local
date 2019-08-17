@@ -1,5 +1,5 @@
 import AWS from "aws-sdk";
-import * as utils from "./utils";
+import * as utils from "../common/utils";
 
 const SQS_URL = process.env.AWS_SQS_URL;
 
