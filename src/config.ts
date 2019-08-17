@@ -2,6 +2,14 @@
 // central source of truth for all environment variables
 */
 
+// basic app configs
+export const APP_NAME = process.env.APP_NAME;
+
+// logging configs
+export const APP_LOG_LEVEL = (process.env.APP_LOG_LEVEL || "info").toLocaleLowerCase();
+export const APP_LOG_INCLUDE_TIMESTAMP = (process.env.APP_LOG_INCLUDE_TIMESTAMP || "true") === "true";
+
+// subscriber configs
 export const PORT = process.env.PORT!;
 export const QUEUE_ALL_POST_REQUESTS = process.env.QUEUE_ALL_POST_REQUESTS!;
 export const AWS_SNS_TOPIC = process.env.AWS_SNS_TOPIC!;

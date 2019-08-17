@@ -1,4 +1,5 @@
 import AWS from "aws-sdk";
+import { logger } from "../common/logger";
 import * as utils from "../common/utils";
 import * as config from "../config";
 
@@ -20,14 +21,14 @@ async function send(msg: string) {
     };
     try {
         await sqs.sendMessage(params).promise();
-        console.log(`msg send to queue`);
+        logger.trace(`msg sent to queue`);
     } catch (err) {
         if (err.errno !== "ECONNREFUSED")
             throw err;
         // add unsent msg to pending list
         pending.push(msg);
-        console.log(`queue not ready yet...`);
-        console.log(`pending msgs to send: ${pending.length}`);
+        logger.warn(`queue not ready yet...`);
+        logger.warn(`pending msgs to send: ${pending.length}`);
     }
 }
 

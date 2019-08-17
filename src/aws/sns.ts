@@ -1,11 +1,13 @@
 import AWS from "aws-sdk";
+import { logger } from "../common/logger";
 import { Nullable } from "../common/types";
 import * as config from "../config";
 let sns = new AWS.SNS();
 
+
 export async function subscribe(url: string) {
     if (!config.AWS_SNS_TOPIC_SUBSCRIBE) {
-        console.log(`skipping sns topic subscribe as it is disabled`);
+        logger.debug(`skipping sns topic subscribe as it is disabled`);
         return;
     }
 
@@ -34,9 +36,9 @@ async function autoSubscribe(url: string, topicName: string) {
     }
 
     if (!topic) {
-        console.log(`no matching topic found: ${topicName}`);
+        logger.info(`no matching topic found: ${topicName}`);
     } else {
-        console.log(`auto-subscribe match found: ${topic}`);
+        logger.info(`auto-subscribe match found: ${topic}`);
         await snsSubscribe(url, topic);
     }
 }
@@ -53,7 +55,7 @@ async function autoUnsubscribe(topicName: string) {
             continue;
         if (!sub.Endpoint || !sub.Endpoint.includes("ngrok.io/sns"))
             continue;
-        console.log(`auto-unsubscribe from topic: ${sub.SubscriptionArn}`);
+        logger.info(`auto-unsubscribe from topic: ${sub.SubscriptionArn}`);
         await snsUnsubscribe(sub.SubscriptionArn!);
     }
 }
@@ -63,7 +65,7 @@ async function snsSubscribe(url: string, topic: string) {
         await autoUnsubscribe(topic);
     let proto = url.indexOf("https:") === 0 ? "https" : "http";
     let params = { Endpoint: url, Protocol: proto, TopicArn: topic };
-    console.log(`subscribing: ${topic} -> ${url}`);
+    logger.info(`subscribing: ${topic} -> ${url}`);
     let sub = await sns.subscribe(params).promise();
     process.on("SIGTERM", async () => {
         if (config.AWS_SNS_TOPIC_AUTO_UNSUBSCRIBE_ON_EXIT)
@@ -73,21 +75,21 @@ async function snsSubscribe(url: string, topic: string) {
 
 async function snsUnsubscribe(sub: string) {
     let params = { SubscriptionArn: sub };
-    console.log(`unsubscribing to: ${sub})`);
+    logger.info(`unsubscribing to: ${sub})`);
     await sns.unsubscribe(params).promise();
 }
 
 async function snsListTopic(token?: Nullable<string>) {
     let params = <AWS.SNS.ListTopicsInput>{};
     if (token) { params.NextToken = token; }
-    console.log(`listing topics (token: ${token || "none"})`);
+    logger.debug(`listing topics (token: ${token || "none"})`);
     return await sns.listTopics(params).promise();
 }
 
 async function snsListSubscription(topic: string, token?: Nullable<string>) {
     let params = <AWS.SNS.ListSubscriptionsByTopicInput>{ TopicArn: topic };
     if (token) { params.NextToken = token; }
-    console.log(`listing subscrciptions (token: ${token || "none"})`);
+    logger.debug(`listing subscrciptions (token: ${token || "none"})`);
     return await sns.listSubscriptionsByTopic(params).promise();
 }
 

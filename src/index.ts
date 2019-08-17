@@ -9,13 +9,14 @@
 import { Context } from "server/typings/common";
 import * as sns from "./aws/sns";
 import * as sqs from "./aws/sqs";
+import { logger } from "./common/logger";
 import * as utils from "./common/utils";
 import * as config from "./config";
 
 
 async function handler(req: Context) {
     if (!req.headers["x-amz-sns-topic-arn"] && !config.QUEUE_ALL_POST_REQUESTS)
-        console.log(`rejecting msg: ${req.data}`);
+        logger.warn(`rejecting msg: ${req.data}`);
     else if (req.headers["x-amz-sns-topic-arn"])
         await handleSnsMessage(req.data);
     else if (req.method === "POST")
@@ -27,14 +28,14 @@ async function handleSnsMessage(data: string) {
     if (!event) return;
 
     if (event.Type === "SubscriptionConfirmation") {
-        console.log(`confirming subscription: ${event.SubscribeURL}`);
+        logger.info(`confirming subscription: ${event.SubscribeURL}`);
         await utils.request(event.SubscribeURL);
     } else if (event.Type === "Notification") {
-        console.log(`${event.Subject || "no-subject"}: ${event.Message}`);
+        logger.info(`${event.Subject || "no-subject"}: ${event.Message}`);
         let msg = JSON.stringify(event);
         sqs.queue(msg);
     } else {
-        console.log(`unknown: ${JSON.stringify(event)}`);
+        logger.warn(`unknown: ${JSON.stringify(event)}`);
     }
 }
 
@@ -50,7 +51,7 @@ async function init() {
         let url = await utils.startTunnel(svr.options.port);
         await sns.subscribe(`${url}/sns`);
     } catch (err) {
-        console.log(`ERROR: ${err}\n${err.stack}`);
+        logger.error(`ERROR: ${err}\n${err.stack}`);
     }
 }
 
