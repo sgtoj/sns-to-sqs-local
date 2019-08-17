@@ -3,18 +3,21 @@ import * as utils from "../common/utils";
 import * as config from "../config";
 
 
-const sqs = new AWS.SQS({ endpoint: config.AWS_SQS_URL });
-let running = false;
-let pending = [];
+const sqs: AWS.SQS = new AWS.SQS({ endpoint: config.AWS_SQS_URL });
+let running: boolean = false;
+let pending: string[] = [];
 
-export const queue = (msg) => {
+export const queue = (msg: string) => {
     pending.push(msg);
     // tslint:disable-next-line: no-floating-promises
     if (!running) startSender();
 };
 
-async function send(msg) {
-    let params = { QueueUrl: config.AWS_SQS_URL, MessageBody: msg };
+async function send(msg: string) {
+    let params: AWS.SQS.SendMessageRequest = {
+        QueueUrl: config.AWS_SQS_URL,
+        MessageBody: msg,
+    };
     try {
         await sqs.sendMessage(params).promise();
         console.log(`msg send to queue`);

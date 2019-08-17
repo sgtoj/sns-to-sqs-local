@@ -6,13 +6,14 @@
 //
 // =============================================================================
 
+import { Context } from "server/typings/common";
 import * as sns from "./aws/sns";
 import * as sqs from "./aws/sqs";
 import * as utils from "./common/utils";
 import * as config from "./config";
 
 
-async function handler(req) {
+async function handler(req: Context) {
     if (!req.headers["x-amz-sns-topic-arn"] && !config.QUEUE_ALL_POST_REQUESTS)
         console.log(`rejecting msg: ${req.data}`);
     else if (req.headers["x-amz-sns-topic-arn"])
@@ -21,7 +22,7 @@ async function handler(req) {
         await handlePostRequest(req.data);
 }
 
-async function handleSnsMessage(data) {
+async function handleSnsMessage(data: string) {
     let event = utils.parse(data);
     if (!event) return;
 
@@ -37,7 +38,7 @@ async function handleSnsMessage(data) {
     }
 }
 
-async function handlePostRequest(data) {
+async function handlePostRequest(data: any) {
     if (!utils.isString(data) && !utils.isNumber(data))
         data = JSON.stringify(data);
     sqs.queue(data.toString());

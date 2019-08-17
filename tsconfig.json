@@ -13,8 +13,7 @@
     "outDir": "dist",
     "newLine": "LF",
     "pretty": true,
-    "strict": false,
-    "noImplicitAny": false,
+    "strict": true,
     "watch": false
   },
   "exclude": [
