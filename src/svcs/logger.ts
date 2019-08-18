@@ -27,5 +27,4 @@ const LOGGER_OPTIONS: pino.LoggerOptions = {
     useLevelLabels: true,
 };
 
-export const logger = pino(LOGGER_OPTIONS);
-export default logger;
+export default pino(LOGGER_OPTIONS);

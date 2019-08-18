@@ -54,5 +54,4 @@ export class QueueAsync {
 
 }
 
-export const queue = new QueueAsync();
-export default queue;
+export default new QueueAsync();
