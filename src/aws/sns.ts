@@ -1,7 +1,7 @@
 import AWS from "aws-sdk";
-import { logger } from "../common/logger";
 import { Nullable } from "../common/types";
 import * as config from "../config";
+import logger from "../svcs/logger";
 let sns = new AWS.SNS();
 
 

@@ -28,3 +28,4 @@ const LOGGER_OPTIONS: pino.LoggerOptions = {
 };
 
 export const logger = pino(LOGGER_OPTIONS);
+export default logger;

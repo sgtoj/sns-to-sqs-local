@@ -3,7 +3,7 @@ import server, { reply } from "server";
 import { Context } from "server/typings/common";
 import { Options } from "server/typings/options";
 import * as config from "../config";
-import { logger } from "./logger";
+import logger from "../svcs/logger";
 
 
 export async function startWebServer(handler: Function) {

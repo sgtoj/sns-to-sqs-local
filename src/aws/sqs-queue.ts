@@ -1,5 +1,5 @@
 import * as AWS from "aws-sdk";
-import { logger } from "../common/logger";
+import logger from "../svcs/logger";
 
 const MSG_VISIBILITY_TIMEOUT = 15;
 const MAX_NUM_OF_MSG = 1;

@@ -1,7 +1,7 @@
 import { SqsQueue } from "../aws/sqs-queue";
-import { logger } from "../common/logger";
 import * as utils from "../common/utils";
 import * as config from "../config";
+import logger from "../svcs/logger";
 
 export class QueueAsync {
     private client: SqsQueue;

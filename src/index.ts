@@ -8,9 +8,9 @@
 
 import { Context } from "server/typings/common";
 import * as sns from "./aws/sns";
-import { logger } from "./common/logger";
 import * as utils from "./common/utils";
 import * as config from "./config";
+import { logger } from "./svcs/logger";
 import queue from "./svcs/queue";
 
 async function handler(req: Context) {
