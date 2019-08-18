@@ -8,11 +8,10 @@
 
 import { Context } from "server/typings/common";
 import * as sns from "./aws/sns";
-import * as sqs from "./aws/sqs";
 import { logger } from "./common/logger";
 import * as utils from "./common/utils";
 import * as config from "./config";
-
+import queue from "./svcs/queue";
 
 async function handler(req: Context) {
     if (!req.headers["x-amz-sns-topic-arn"] && !config.QUEUE_ALL_POST_REQUESTS)
@@ -33,7 +32,7 @@ async function handleSnsMessage(data: string) {
     } else if (event.Type === "Notification") {
         logger.info(`${event.Subject || "no-subject"}: ${event.Message}`);
         let msg = JSON.stringify(event);
-        sqs.queue(msg);
+        queue.queue(msg);
     } else {
         logger.warn(`unknown: ${JSON.stringify(event)}`);
     }
@@ -42,7 +41,7 @@ async function handleSnsMessage(data: string) {
 async function handlePostRequest(data: any) {
     if (!utils.isString(data) && !utils.isNumber(data))
         data = JSON.stringify(data);
-    sqs.queue(data.toString());
+    queue.queue(data.toString());
 }
 
 async function init() {
