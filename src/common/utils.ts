@@ -61,5 +61,12 @@ export async function sleep(ms: number) {
     });
 }
 
-export { isNumber, isString } from "util";
+export function isNumber(value: any): boolean {
+    return typeof value === "number";
+}
+
+export function isString(value: any): boolean {
+    return typeof value === "string";
+}
+
 
