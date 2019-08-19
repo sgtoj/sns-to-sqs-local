@@ -2,7 +2,24 @@ import AWS from "aws-sdk";
 import { Nullable } from "../common/types";
 import * as config from "../config";
 import logger from "../svcs/logger";
+
+
 let sns = new AWS.SNS();
+
+// export class SnsClient {
+//     public readonly client: AWS.SNS;
+//     constructor() {
+//         this.client = new AWS.SNS();
+//     }
+
+//     public *listTopics() {
+
+//     }
+
+//     public *listSubscriptions() {
+
+//     }
+// }
 
 
 export async function subscribe(url: string) {
@@ -93,6 +110,47 @@ async function snsListSubscription(topic: string, token?: Nullable<string>) {
     return await sns.listSubscriptionsByTopic(params).promise();
 }
 
+
+// class AwsPagnator<T> implements AsyncIterator<T> {
+//     private readonly awsFn: Function;
+//     private isLastPage: boolean;
+//     private nextToken: string | undefined;
+
+//     constructor(awsFn: Function) {
+//         this.awsFn = awsFn;
+//         this.isLastPage = false;
+//         this.nextToken = undefined;
+//     }
+
+//     public async next(...args: [] | [PromiseLike<undefined> | undefined]): Promise<IteratorResult<T, any>> {
+//         const client = new AWS.SNS();
+//         const response = await client.listTopics().promise();
+
+//         this.nextToken = response.NextToken;
+//         this.isLastPage = this.nextToken === undefined;
+
+//         return { value: response.Topics, done: this.isLastPage };
+//     }
+
+//     public async paginate(params?: ObjLiteral) {
+//         let isLastPage: boolean = false;
+//         let lastToken:
+//             return; (async () => {
+
+//             });
+
+//         if (this.topics.length === 0 && !this.finished) {
+//             let result = await snsListTopic(this.nextToken);
+//             this.topics = result.Topics!;
+//             this.nextToken = result.NextToken;
+//             this.isLastPage = !this.nextToken;
+//         }
+//         let topic = this.topics.pop() || {};
+//         return { value: topic.TopicArn!, done: this.isLastPage };
+//     }
+// }
+
+
 class TopicList {
     isLastPage: boolean;
     topics: AWS.SNS.Topic[];
@@ -114,14 +172,14 @@ class TopicList {
             this.isLastPage = !this.token;
         }
         let topic = this.topics.pop() || {};
-        return { value: topic.TopicArn!, done: this.finished };
+        return { value: topic.TopicArn!, done: this.finished }; 1;
     }
 }
 
 class SubscriptionList {
     isLastPage: boolean;
     subs: AWS.SNS.Subscription[];
-    token: string | null | undefined;
+    token: Nullable<string>;
     topic: string;
 
     constructor(topic: string) {
